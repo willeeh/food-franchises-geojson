@@ -9,40 +9,35 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static com.fastfood.util.Constants.*;
+import static com.fastfood.util.Constants.LABEL;
 
-public class Main
+public class FranchiseScraping
 {
-
-	public static void main(String[] args) throws IOException
+	public Map<Category, Set<Franchise>> doScraping() throws IOException
 	{
-		Main main = new Main();
+		Map<Category, Set<Franchise>> franchisesByCategory = new HashMap<Category, Set<Franchise>>();
 
-		main.scraping();
-	}
-
-	public void scraping() throws IOException
-	{
-		Set<Franchise> franchises = new HashSet<Franchise>();
-
-		for ( Category c : Category.values() )
+		for ( Category category : Category.values() )
 		{
-			Document doc = Jsoup.connect(c.getUrl()).get();
+			Document doc = Jsoup.connect(category.getUrl()).get();
 			Elements franchisesElements = doc.getElementsByClass(LIST_T);
+
+			Set<Franchise> franchises = new HashSet<Franchise>();
 
 			for (Element franchiseElement : franchisesElements)
 			{
-				Franchise franchiseModel = generateFranchiseModel(franchiseElement, c);
+				Franchise franchiseModel = generateFranchiseModel(franchiseElement, category);
 
 				if ( franchises.contains(franchiseModel) )
 				{
 					continue;
 				}
-
-				franchises.add(franchiseModel);
 
 				Elements locations = getLocationsElement(franchiseElement);
 
@@ -52,9 +47,14 @@ public class Main
 					franchiseModel.addLocation( generateLocationModel(location, ++i) );
 				}
 
-				generateGeoJson(franchiseModel);
+				franchises.add(franchiseModel);
 			}
+
+			franchisesByCategory.put(category, franchises);
+
 		}
+
+		return franchisesByCategory;
 	}
 
 	private Franchise generateFranchiseModel(Element franchiseElement, Category category)
@@ -114,12 +114,4 @@ public class Main
 		Element addressSpan = location.getElementById(PREFIX_LOCATION_CLASS + (counter < 10 ? "0" : "") + counter + LABEL + suffix);
 		return addressSpan != null ? addressSpan.text() : null;
 	}
-
-
-	private void generateGeoJson(Franchise franchise)
-	{
-		System.out.println(franchise.toString());
-		//TODO
-	}
-
 }
