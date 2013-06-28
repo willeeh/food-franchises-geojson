@@ -42,18 +42,26 @@ public class GeoJsonGenerator
 						@Override
 						public String getFeatureId()
 						{
-							return UUID.randomUUID().toString();
+							return "";
 						}
 
 						@Override
 						public MfGeometry getMfGeometry()
 						{
-							Point point = geometryFactory.createPoint(
-									new Coordinate(
-											location.getLatitude().doubleValue(),
-											location.getLongitude().doubleValue()
-									)
-							);
+							Point point = null;
+							try
+							{
+								point = geometryFactory.createPoint(
+										new Coordinate(
+												location.getLatitude().doubleValue(),
+												location.getLongitude().doubleValue()
+										)
+								);
+							}
+							catch (Exception ex)
+							{
+								System.err.println("Error. " + ex);
+							}
 
 							return new MfGeometry(point);
 						}
