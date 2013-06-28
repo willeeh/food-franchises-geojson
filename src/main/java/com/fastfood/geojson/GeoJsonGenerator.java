@@ -53,9 +53,9 @@ public class GeoJsonGenerator
 							{
 								point = geometryFactory.createPoint(
 										new Coordinate(
-												location.getLatitude().doubleValue(),
-												location.getLongitude().doubleValue()
-										)
+												location.getLongitude().doubleValue(),
+												location.getLatitude().doubleValue()
+												)
 								);
 							}
 							catch (Exception ex)
