@@ -33,7 +33,7 @@ public class GeoJsonGenerator
 
 			Collection<MfFeature> featureCollection = new ArrayList<MfFeature>();
 
-			for (Franchise franchise : franchises)
+			for (final Franchise franchise : franchises)
 			{
 				for (final Location location : franchise.getLocations())
 				{
@@ -69,7 +69,11 @@ public class GeoJsonGenerator
 						@Override
 						public void toJSON(JSONWriter jsonWriter) throws JSONException
 						{
-
+							jsonWriter.key("marker-symbol").value("fast-food");
+							jsonWriter.key("name").value(franchise.getName());
+							jsonWriter.key("address").value(location.getAddress());
+							jsonWriter.key("city").value(location.getCity());
+							jsonWriter.key("zipCode").value(location.getZipCode());
 						}
 					};
 
