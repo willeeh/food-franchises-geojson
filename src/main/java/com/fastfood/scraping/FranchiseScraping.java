@@ -44,7 +44,11 @@ public class FranchiseScraping
 				int i = 0;
 				for (Element location : locations)
 				{
-					franchiseModel.addLocation( generateLocationModel(location, ++i) );
+					Location locationModel = generateLocationModel(location, ++i);
+					if (locationModel != null)
+					{
+						franchiseModel.addLocation(locationModel);
+					}
 				}
 
 				franchises.add(franchiseModel);
@@ -106,12 +110,25 @@ public class FranchiseScraping
 		String latitudeStr = javascript.substring( javascript.indexOf("(")+1, javascript.indexOf(",")).trim();
 		String longitudStr = javascript.substring( javascript.indexOf(",")+1, javascript.indexOf(")")).trim();
 
-		return new Location(address, city, zipCode, Double.parseDouble(latitudeStr), Double.parseDouble(longitudStr));
+		double latitude = Double.parseDouble(latitudeStr);
+		double longitude = Double.parseDouble(longitudStr);
+
+		if ( !isOutOfSpain(latitude, longitude) )
+		{
+			return new Location(address, city, zipCode, latitude, longitude);
+		}
+
+		return null;
 	}
 
 	private String getAdressOrCityOrZipCode(Element location, int counter, int suffix)
 	{
 		Element addressSpan = location.getElementById(PREFIX_LOCATION_CLASS + (counter < 10 ? "0" : "") + counter + LABEL + suffix);
 		return addressSpan != null ? addressSpan.text() : null;
+	}
+
+	private boolean isOutOfSpain(double latitude, double longitude)
+	{
+		return longitude < -18d || longitude > 5d || latitude > 44d || latitude < 27d;
 	}
 }
