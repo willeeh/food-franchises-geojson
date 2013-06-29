@@ -21,7 +21,7 @@ public class Main
 		GeoJsonGenerator generator = new GeoJsonGenerator();
 		for (Entry<Category,Set<Franchise>> entry : categorySetMap.entrySet())
 		{
-			generator.generateGeoJson(entry.getKey(), entry.getValue());
+			generator.generateGeoJsonByCategory(entry.getKey(), entry.getValue());
 		}
 	}
 
