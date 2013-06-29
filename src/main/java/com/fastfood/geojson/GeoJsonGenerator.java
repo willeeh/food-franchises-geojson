@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
-import java.util.UUID;
 
 public class GeoJsonGenerator
 {
@@ -26,10 +25,11 @@ public class GeoJsonGenerator
 	{
 		final GeometryFactory geometryFactory = new GeometryFactory();
 
+		FileWriter writer = null;
 		try
 		{
-			MfGeoJSONWriter geoJSONWriter = new MfGeoJSONWriter(
-					new JSONWriter(new FileWriter(category.name() + ".geojson")) );
+			writer = new FileWriter(category.name() + ".geojson");
+			MfGeoJSONWriter geoJSONWriter = new MfGeoJSONWriter(new JSONWriter(writer));
 
 			Collection<MfFeature> featureCollection = new ArrayList<MfFeature>();
 
@@ -91,6 +91,20 @@ public class GeoJsonGenerator
 		catch (JSONException e)
 		{
 			System.err.println("Error. " + e);
+		}
+		finally
+		{
+			try
+			{
+				if (writer != null)
+				{
+					writer.close();
+				}
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+			}
 		}
 
 	}
