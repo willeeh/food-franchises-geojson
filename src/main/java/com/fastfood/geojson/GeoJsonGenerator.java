@@ -21,7 +21,7 @@ import java.util.Set;
 
 public class GeoJsonGenerator
 {
-	public void generateGeoJson(Category category, Set<Franchise> franchises)
+	public void generateGeoJson(final Category category, Set<Franchise> franchises)
 	{
 		final GeometryFactory geometryFactory = new GeometryFactory();
 
@@ -69,7 +69,9 @@ public class GeoJsonGenerator
 						@Override
 						public void toJSON(JSONWriter jsonWriter) throws JSONException
 						{
-							jsonWriter.key("marker-symbol").value("fast-food");
+							jsonWriter.key("marker-symbol").value(category.getMarkerSymbol());
+							jsonWriter.key("marker-color").value(category.getMarkerColor());
+
 							jsonWriter.key("name").value(franchise.getName());
 							jsonWriter.key("address").value(location.getAddress());
 							jsonWriter.key("city").value(location.getCity());
